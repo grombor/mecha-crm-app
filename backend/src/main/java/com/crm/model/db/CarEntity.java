@@ -1,7 +1,6 @@
 package com.crm.model.db;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -16,9 +15,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "cars")
-@Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
+@Builder
+@Table(name = "cars")
 public class CarEntity {
 
     @Id
@@ -33,7 +36,7 @@ public class CarEntity {
     private Integer mileage;
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "type_id")
     private CarTypeEntity carTypeEntity;
 

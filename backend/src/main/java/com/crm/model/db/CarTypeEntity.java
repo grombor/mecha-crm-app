@@ -1,5 +1,6 @@
 package com.crm.model.db;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 @Table(name = "car_types")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CarTypeEntity {
 
     @Id

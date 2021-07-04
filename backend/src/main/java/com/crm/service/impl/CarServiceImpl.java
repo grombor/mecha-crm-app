@@ -1,6 +1,7 @@
 package com.crm.service.impl;
 
 import com.crm.dto.mapper.CarMapper;
+import com.crm.dto.request.CarRequest;
 import com.crm.dto.response.CarResponse;
 import com.crm.model.db.CarEntity;
 import com.crm.repository.CarRepository;
@@ -33,5 +34,10 @@ public class CarServiceImpl implements CarService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(carResponseList, pageable, carsPage.getTotalPages());
+    }
+
+    @Override
+    public void addCar(CarRequest carRequest) {
+        carRepository.save(carMapper.convertToEntity(carRequest));
     }
 }
