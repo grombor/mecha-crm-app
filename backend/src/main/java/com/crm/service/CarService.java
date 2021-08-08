@@ -8,5 +8,7 @@ public interface CarService {
 
     Page<CarResponse> getCarsPaginated(final int page, final int size);
 
+    CarResponse getCarById(final Long id);
+
     void addCar(CarRequest carRequest);
 }

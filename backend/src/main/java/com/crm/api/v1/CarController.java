@@ -28,6 +28,12 @@ public class CarController {
     public ResponseEntity<Page<CarResponse>> getCarsPaginated(@Valid PageRequest pageRequest) {
         return ResponseEntity.ok(carService.getCarsPaginated(pageRequest.getPage(), pageRequest.getSize()));
     }
+
+    @GetMapping("/{carId}")
+    @ApiOperation(value = "Endpoint enable getting car by Id", notes = "Add param \"carId\" to specify which car should be returned")
+    public ResponseEntity<CarResponse> getCarById(@PathVariable Long carId) {
+        return ResponseEntity.ok(carService.getCarById(carId));
+    }
     @PostMapping
     @ApiOperation(value= "Endpoint is used to create a new car")
     @ResponseStatus(HttpStatus.CREATED)
