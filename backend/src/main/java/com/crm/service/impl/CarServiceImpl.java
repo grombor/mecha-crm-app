@@ -1,11 +1,15 @@
 package com.crm.service.impl;
 
 import com.crm.dto.mapper.CarMapper;
+import com.crm.dto.request.CarRequest;
 import com.crm.dto.response.CarResponse;
+import com.crm.exception.CarHandlingException;
 import com.crm.exception.CarNotFoundException;
 import com.crm.exception.ErrorDict;
 import com.crm.model.db.CarEntity;
+import com.crm.model.db.CarTypeEntity;
 import com.crm.repository.CarRepository;
+import com.crm.repository.CarTypeRepository;
 import com.crm.service.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,6 +27,7 @@ public class CarServiceImpl implements CarService {
 
     private final CarRepository carRepository;
     private final CarMapper carMapper;
+    private final CarTypeRepository carTypeRepository;
 
     @Override
     public Page<CarResponse> getCarsPaginated(final int page, final int size) {
@@ -48,5 +53,33 @@ public class CarServiceImpl implements CarService {
         return carRepository.findByRegistrationNumberIgnoreCase(registrationNumber)
                 .map(carMapper::convertToDto)
                 .orElseThrow(() -> new CarNotFoundException(ErrorDict.REGISTRATION_NUMBER_NOT_FOUND));
+    }
+
+    @Override
+    public CarEntity addCar(CarRequest carRequest) {
+
+        CarTypeEntity carTypeEntity;
+        String nameOfCarTypeEntity = carRequest.getCarTypeEntity().getName();
+
+        if (carRepository.findByRegistrationNumberIgnoreCase(carRequest.getRegistrationNumber()).isPresent()) {
+            throw new CarHandlingException(ErrorDict.CAR_CREATE_REGISTRATION_NUMBER_EXISTS);
+        }
+
+        if (carRepository.findByVinIgnoreCase(carRequest.getVin()).isPresent()) {
+            throw new CarHandlingException(ErrorDict.CAR_CREATE_VIN_EXISTS);
+        }
+
+        if (nameOfCarTypeEntity.isBlank()) {
+            carTypeEntity = carTypeRepository.findByNameIgnoreCase("Other")
+                    .orElseGet(() -> CarTypeEntity.builder().name("Other").build());
+        } else {
+            carTypeEntity = carTypeRepository.findByNameIgnoreCase(nameOfCarTypeEntity)
+                    .orElseGet(() -> CarTypeEntity.builder().name(nameOfCarTypeEntity).build());
+        }
+
+        CarEntity newCar = carMapper.convertToEntity(carRequest);
+        newCar.setCarTypeEntity(carTypeEntity);
+
+        return carRepository.save(newCar);
     }
 }

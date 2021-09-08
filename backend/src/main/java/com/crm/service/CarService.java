@@ -1,6 +1,8 @@
 package com.crm.service;
 
+import com.crm.dto.request.CarRequest;
 import com.crm.dto.response.CarResponse;
+import com.crm.model.db.CarEntity;
 import org.springframework.data.domain.Page;
 
 public interface CarService {
@@ -10,4 +12,6 @@ public interface CarService {
     CarResponse getCarById(final Long id);
 
     CarResponse getCarByRegistrationNumber(final String registrationNumber);
+
+    CarEntity addCar(final CarRequest carRequest);
 }
